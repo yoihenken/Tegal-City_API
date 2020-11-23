@@ -3,7 +3,7 @@ const router = express.Router()
 const controller = require("../controller/home-controller")
 
 router.get("/berita/:page", controller.getBerita)
-router.get("/berita/detail/:type/:id", controller.getBeritaDetail)
-// router.get("/berita/detail/:id", controller.getBeritaDetail)
+// router.get("/berita/detail/:type/:url", controller.getBeritaDetail)
+router.post("/berita/detail", controller.getBeritaDetail)
 
 module.exports = { router };

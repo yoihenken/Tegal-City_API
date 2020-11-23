@@ -2,6 +2,8 @@ const cheerio = require("cheerio")
 const { default: Axios } = require("axios");
 const { html } = require("cheerio");
 
+//LIST BERITA
+//USING GET
 const getBerita = async (req, res, next) => {
     try{
         const page = req.params.page;
@@ -20,7 +22,7 @@ const getBerita = async (req, res, next) => {
             .children()
             .each((i, elem) => {
                 const title = $(elem).find(".article__link").eq(0).text()
-                const url = $(elem).find(".article__link").eq(0).attr("href").split('kompas.com')[1]
+                const url = $(elem).find(".article__link").eq(0).attr("href")
                 console.log(url);
                 const img = $(elem).find("img").eq(0).attr("src")
                 const type = $(elem).find(".article__subtitle--inline").eq(0).text()
@@ -38,33 +40,33 @@ const getBerita = async (req, res, next) => {
     }
 }
 
+// DETAIL BERITA
+//USING POST
 const getBeritaDetail = async(req, res, next) => {
     try{
-        const type = req.params.type;
-        const id = req.params.id;
-        const response = await Axios.get("https://" + type + ".kompas.com" + id + "?page=all");
-        // const response = await Axios.get("https://regional.kompas.com/read/2020/11/18/16032381/puluhan-pedagang-positif-covid-19-masih-ada-yang-nekat-jualan-meski-pasar?page=all#page3");
-        // console.log(response.data);
-        // const response = await Axios.get(`regional.kompas.com/${id}`)
-        // alert(response)
-        // untuk seleksi data
+        //Declaration
+        const url = req.body.url;
+        const response = await Axios.get(url + "?page=all");
         const $ = cheerio.load(response.data);
         const list = [];
-        // let object = {};
+        let object = {};
 
-        const title = $("#read__title").eq(0).text();
-        const tanggal = $("#read__time").eq(0).text();
-        const img = $("#photo_warp").find("img").eq(0).attr("src");
-        const imgCaption = $("#photo__caption").eq(0).text();
-        const penulis = $(".penulis").find("a").text();
-        const editor = $(".editor").find("a").text();
-        // object.isi = $("#read__content").eq(0).each
+        object.title = $("body > div.wrap > div.container.clearfix > div:nth-child(4) > div > h1").text()        
+        object.img =  $(".photo").eq(0).find("img").eq(0).attr("src");
+        object.tanggal = $("body > div.wrap > div.container.clearfix > div.row.col-offset-fluid.clearfix.js-giant-wp-sticky-parent > div.col-bs10-7.js-read-article > div.read__header.col-offset-fluid.clearfix > div:nth-child(1) > div").text()
+        object.penulis = $("body > div.wrap > div.container.clearfix > div.row.col-offset-fluid.clearfix.js-giant-wp-sticky-parent > div.col-bs10-7.js-read-article > div.read__article.mt2.clearfix.js-tower-sticky-parent > div.col-bs9-7 > div.read__credit.clearfix").text()
         
-
-        list.push({title,tanggal,img, imgCaption, penulis, editor});
+        //Get content tag p
+        let listData = []
+        $("body > div.wrap > div.container.clearfix > div.row.col-offset-fluid.clearfix.js-giant-wp-sticky-parent > div.col-bs10-7.js-read-article > div.read__article.mt2.clearfix.js-tower-sticky-parent > div.col-bs9-7 > div.read__content")
+        .each((i, elem) => {
+            // console.log($(elem).text());
+            listData.push($(elem).text().trim())
+        })
+        object.isi = listData
         
-        // res.send({response: response, status: true, url : response, list}) ;
-        res.send({status: true, list}) ;
+        //push object to list
+        res.send({status: true, data:object}) ;
                            
     }catch(err){
         console.log(err);
