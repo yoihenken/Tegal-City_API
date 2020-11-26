@@ -2,6 +2,7 @@ const cheerio = require("cheerio")
 const { default: Axios } = require("axios");
 const { html } = require("cheerio");
 
+
 //LIST BERITA
 //USING GET
 const getBerita = async (req, res, next) => {
@@ -51,7 +52,7 @@ const getBeritaDetail = async(req, res, next) => {
         const baseURL = await Axios.get("https://www.kompas.com/tag/Tegal?sort=desc&page=" + page);
         const $baseURL = cheerio.load(baseURL.data);
         
-        console.log(burl);
+        // console.log(burl);
 
         let listURL = []; 
 
@@ -66,15 +67,15 @@ const getBeritaDetail = async(req, res, next) => {
                 listURL.push(url)
         })
 
-        console.log(listURL[id]);
-        console.log(listURL);
+        // console.log(listURL[id]);
+        // console.log(listURL);
 
         const detailURL = await Axios.get(listURL[id] + "?page=all");
 
         const $ = cheerio.load(detailURL.data);
     
-        const list = [];
-        let object = {};
+        const list = []
+        let object = {}
 
         object.title    = $("body > div.wrap > div.container.clearfix > div:nth-child(4) > div > h1").text()        
         object.img      =  $(".photo").eq(0).find("img").eq(0).attr("src");
@@ -91,7 +92,7 @@ const getBeritaDetail = async(req, res, next) => {
         object.isi = listData
         
         //push object to list
-        res.send({status: true, data:object}) ;
+        res.send({status: true, data:object}) 
                            
     }catch(err){
         console.log(err);
@@ -101,42 +102,25 @@ const getBeritaDetail = async(req, res, next) => {
     }
 }
 
-// // DETAIL BERITA
-// // USING POST
-// const getBeritaDetail = async(req, res, next) => {
-//     try{
-//         const url = req.body.url;
-//         const response = await Axios.get(url + "?page=all");
-//         const $ = cheerio.load(response.data);
-//         const list = [];
-//         let object = {};
+// Pariwisata
 
-//         object.title = $("body > div.wrap > div.container.clearfix > div:nth-child(4) > div > h1").text()        
-//         object.img =  $(".photo").eq(0).find("img").eq(0).attr("src");
-//         object.tanggal = $("body > div.wrap > div.container.clearfix > div.row.col-offset-fluid.clearfix.js-giant-wp-sticky-parent > div.col-bs10-7.js-read-article > div.read__header.col-offset-fluid.clearfix > div:nth-child(1) > div").text()
-//         object.penulis = $("body > div.wrap > div.container.clearfix > div.row.col-offset-fluid.clearfix.js-giant-wp-sticky-parent > div.col-bs10-7.js-read-article > div.read__article.mt2.clearfix.js-tower-sticky-parent > div.col-bs9-7 > div.read__credit.clearfix").text()
+const getPariwisata = async(req, res, next) => {
+    try{
+        const id = req.params.id;
+        const pariwisata = require("../data/data-pariwisata")
+        const data = pariwisata.listPariwisata[id]
         
-//         //Get content tag p
-//         let listData = []
-//         $("body > div.wrap > div.container.clearfix > div.row.col-offset-fluid.clearfix.js-giant-wp-sticky-parent > div.col-bs10-7.js-read-article > div.read__article.mt2.clearfix.js-tower-sticky-parent > div.col-bs9-7 > div.read__content")
-//         .each((i, elem) => {
-//             // console.log($(elem).text());
-//             listData.push($(elem).text().trim())
-//         })
-//         object.isi = listData
-        
-//         //push object to list
-//         res.send({status: true, data:object}) ;
-                           
-//     }catch(err){
-//         console.log(err);
-//         res.send({
-//             msg: err.stack
-//         })
-//     }
-// }
+        console.log(data);
+
+        res.send({status: true, data}) 
+
+    }catch(err){
+        console.log(err);
+        res.send({
+            msg: err.stack
+        })
+    }
+}
 
 
-
-
-module.exports = { getBerita, getBeritaDetail }
+module.exports = { getBerita, getBeritaDetail, getPariwisata }
