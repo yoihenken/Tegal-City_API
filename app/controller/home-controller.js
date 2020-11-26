@@ -109,8 +109,6 @@ const getPariwisata = async(req, res, next) => {
         const id = req.params.id;
         const pariwisata = require("../data/data-pariwisata")
         const data = pariwisata.listPariwisata[id]
-        
-        console.log(data);
 
         res.send({status: true, data}) 
 
