@@ -102,9 +102,24 @@ const getBeritaDetail = async(req, res, next) => {
     }
 }
 
-// Pariwisata
-
+// Pariwisata All
 const getPariwisata = async(req, res, next) => {
+    try{
+        const pariwisata = require("../data/data-pariwisata")
+        const data = pariwisata.listPariwisata
+
+        res.send({status: true, data}) 
+
+    }catch(err){
+        console.log(err);
+        res.send({
+            msg: err.stack
+        })
+    }
+}
+
+// Pariwisata Detail
+const getPariwisataDetail = async(req, res, next) => {
     try{
         const id = req.params.id;
         const pariwisata = require("../data/data-pariwisata")
@@ -120,5 +135,4 @@ const getPariwisata = async(req, res, next) => {
     }
 }
 
-
-module.exports = { getBerita, getBeritaDetail, getPariwisata }
+module.exports = { getBerita, getBeritaDetail, getPariwisata, getPariwisataDetail }
