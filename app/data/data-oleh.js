@@ -95,3 +95,5 @@ var listOleh = [
         content : "Teh poci atau moci sudah menjadi ciri khas masyarakat Tegal. Aroma teh dengan rasa sedikit sepet ini sangat khas. Menikmati teh poci paling tepat saat masih hangat sedikit panas. Harganya berkisar Rp7.000,00 untuk satu packnya."
     }
 ]
+
+module.exports = { listOleh }

@@ -78,7 +78,7 @@ const getBeritaDetail = async(req, res, next) => {
         let object = {}
 
         object.title    = $("body > div.wrap > div.container.clearfix > div:nth-child(4) > div > h1").text()        
-        object.img      =  $(".photo").eq(0).find("img").eq(0).attr("src");
+        object.img      = $(".photo").eq(0).find("img").eq(0).attr("src");
         object.tanggal  = $("body > div.wrap > div.container.clearfix > div.row.col-offset-fluid.clearfix.js-giant-wp-sticky-parent > div.col-bs10-7.js-read-article > div.read__header.col-offset-fluid.clearfix > div:nth-child(1) > div").text()
         object.penulis  = $("body > div.wrap > div.container.clearfix > div.row.col-offset-fluid.clearfix.js-giant-wp-sticky-parent > div.col-bs10-7.js-read-article > div.read__article.mt2.clearfix.js-tower-sticky-parent > div.col-bs9-7 > div.read__credit.clearfix").text()
         
@@ -105,11 +105,14 @@ const getBeritaDetail = async(req, res, next) => {
 // Pariwisata All
 const getPariwisata = async(req, res, next) => {
     try{
-        const pariwisata = require("../data/data-pariwisata")
-        const data = pariwisata.listPariwisata
+        const pariwisata = require("../data/data-pariwisata").listPariwisata        
+        let data = []
+        
+        for (let index = 0; index < pariwisata.length; index++) {
+            data.push({title : pariwisata[index].title, image : pariwisata[index].image })
+        }
 
         res.send({status: true, data}) 
-
     }catch(err){
         console.log(err);
         res.send({
@@ -122,8 +125,7 @@ const getPariwisata = async(req, res, next) => {
 const getPariwisataDetail = async(req, res, next) => {
     try{
         const id = req.params.id;
-        const pariwisata = require("../data/data-pariwisata")
-        const data = pariwisata.listPariwisata[id]
+        const data = require("../data/data-pariwisata").listPariwisata[id]
 
         res.send({status: true, data}) 
 
@@ -135,4 +137,41 @@ const getPariwisataDetail = async(req, res, next) => {
     }
 }
 
-module.exports = { getBerita, getBeritaDetail, getPariwisata, getPariwisataDetail }
+//Get all data Oleh oleh Tegal
+const getOleh = async(req, res, next) => {
+    try{
+        const oleh = require("../data/data-oleh").listOleh
+        let data = []
+        
+        for (let index = 0; index < oleh.length; index++) {
+            data.push({title : oleh[index].title, image : oleh[index].image })
+        }
+
+        res.send({status: true, data}) 
+
+    }catch(err){
+        console.log(err);
+        res.send({
+            msg: err.stack
+        })
+    }
+}
+
+//Get Oleh oleh Tegal
+const getOlehDetail = async(req, res, next) => {
+    try{
+        const id = req.params.id;
+        const data = require("../data/data-oleh").listOleh[id]
+
+        res.send({status: true, data}) 
+
+    }catch(err){
+        console.log(err);
+        res.send({
+            msg: err.stack
+        })
+    }
+}
+
+
+module.exports = { getBerita, getBeritaDetail, getPariwisata, getPariwisataDetail, getOleh, getOlehDetail }
