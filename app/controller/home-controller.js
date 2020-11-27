@@ -48,15 +48,11 @@ const getBeritaDetail = async(req, res, next) => {
     try{
         const page = req.params.page;
         const id = req.params.id;
-        let burl = "https://www.kompas.com/tag/Tegal?sort=desc&page=" + page
         const baseURL = await Axios.get("https://www.kompas.com/tag/Tegal?sort=desc&page=" + page);
         const $baseURL = cheerio.load(baseURL.data);
         
-        // console.log(burl);
-
         let listURL = []; 
 
-        //Bermasalah
         $baseURL(".latest--topic")
             .eq(0)
             .children()
