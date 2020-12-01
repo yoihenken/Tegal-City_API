@@ -57,7 +57,7 @@ const getBeritaDetail = async(req, res, next) => {
             .eq(0)
             .children()
             .each((i, elem) => {
-                console.log("Disini error");
+                // console.log("Disini error");
                 const url = $baseURL(elem).find(".article__link").eq(0).attr("href")
                 console.log(url);
                 listURL.push(url)
@@ -170,4 +170,60 @@ const getOlehDetail = async(req, res, next) => {
 }
 
 
-module.exports = { getBerita, getBeritaDetail, getPariwisata, getPariwisataDetail, getOleh, getOlehDetail }
+//Get List Info Event Tegal
+const getEvent = async(req, res, next) => {
+    try {
+        console.log("Mulaii!!!")
+
+        const page = req.params.page;
+        //for destination of web
+        const response = await Axios.get("https://infotegal.com/category/event-tegal/page/" + page);
+        //for load html
+        const $ = cheerio.load(response.data);
+        const list = []
+
+        $("#main")
+            .eq(0)
+            .children()
+            .each((i, elem) => {
+                let object = {}
+                const title = $("header > h2").eq(i).find("a")
+                
+                if(title != ""){
+                    object.title = $("header > h2").eq(i).find("a").text()
+                    object.url = $("header > h2").eq(i).find("a").attr("href")
+                    object.date = $("header > div > span.posted-on > a > time.entry-date.published").eq(i).text()
+                    object.image = $("div.post-thumb > a").eq(i).find("img").attr("src")
+                    list.push(object)            
+                }
+
+            });
+
+        
+        res.send({status: true, data: list})
+
+
+    } catch (error) {
+        console.log(error);
+        res.send({
+            msg: err.stack
+        })
+    }
+}
+
+//Get detail Info Event Tegal
+const getEventDetail = async(req, res, next) => {
+    try {
+        
+
+        
+    } catch (error) {
+        console.log(error);
+        res.send({
+            msg: err.stack
+        })
+    }
+}
+
+
+module.exports = { getBerita, getBeritaDetail, getPariwisata, getPariwisataDetail, getOleh, getOlehDetail, getEvent, getEventDetail}
