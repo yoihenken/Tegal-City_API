@@ -1,6 +1,7 @@
 const cheerio = require("cheerio")
 const { default: Axios } = require("axios");
 const { html } = require("cheerio");
+const { text } = require("body-parser");
 
 
 //LIST BERITA
@@ -23,15 +24,14 @@ const getBerita = async (req, res, next) => {
             .eq(0)
             .children()
             .each((i, elem) => {
-                const title = $(elem).find(".article__link").eq(0).text()
-                const url = $(elem).find(".article__link").eq(0).attr("href")
-                console.log(url);
-                const img = $(elem).find("img").eq(0).attr("src")
-                const type = $(elem).find(".article__subtitle--inline").eq(0).text()
-                const date = $(elem).find(".article__date").eq(0).text()
-                list.push({
-                    title, url, img, type, date
-                })
+                let object = {}
+
+                object.title = $(elem).find(".article__link").eq(0).text()
+                object.url = $(elem).find(".article__link").eq(0).attr("href")
+                object.img = $(elem).find("img").eq(0).attr("src")
+                object.type = $(elem).find(".article__subtitle--inline").eq(0).text()
+                object.date = $(elem).find(".article__date").eq(0).text()
+                list.push(object)
             })
             res.send({status: true, list}) 
         }                            
@@ -57,23 +57,18 @@ const getBeritaDetail = async(req, res, next) => {
             .eq(0)
             .children()
             .each((i, elem) => {
-                // console.log("Disini error");
                 const url = $baseURL(elem).find(".article__link").eq(0).attr("href")
-                console.log(url);
+                // console.log(url);
                 listURL.push(url)
         })
-
-        // console.log(listURL[id]);
-        // console.log(listURL);
 
         const detailURL = await Axios.get(listURL[id] + "?page=all");
 
         const $ = cheerio.load(detailURL.data);
     
-        const list = []
         let object = {}
 
-        object.title    = $("body > div.wrap > div.container.clearfix > div:nth-child(4) > div > h1").text()        
+        object.title    = $("body > div.wrap > div.container.clearfix > div > div > h1.read__title").text()        
         object.img      = $(".photo").eq(0).find("img").eq(0).attr("src");
         object.tanggal  = $("body > div.wrap > div.container.clearfix > div.row.col-offset-fluid.clearfix.js-giant-wp-sticky-parent > div.col-bs10-7.js-read-article > div.read__header.col-offset-fluid.clearfix > div:nth-child(1) > div").text()
         object.penulis  = $("body > div.wrap > div.container.clearfix > div.row.col-offset-fluid.clearfix.js-giant-wp-sticky-parent > div.col-bs10-7.js-read-article > div.read__article.mt2.clearfix.js-tower-sticky-parent > div.col-bs9-7 > div.read__credit.clearfix").text()
@@ -85,10 +80,10 @@ const getBeritaDetail = async(req, res, next) => {
                 // console.log($(elem).text());
                 listData.push($(elem).text().trim())
         })
-        object.isi = listData
+        object.isi = listData.join()
         
         //push object to list
-        res.send({status: true, data:object}) 
+        res.send({status: true, object}) 
                            
     }catch(err){
         console.log(err);
@@ -173,8 +168,6 @@ const getOlehDetail = async(req, res, next) => {
 //Get List Info Event Tegal
 const getEvent = async(req, res, next) => {
     try {
-        console.log("Mulaii!!!")
-
         const page = req.params.page;
         //for destination of web
         const response = await Axios.get("https://infotegal.com/category/event-tegal/page/" + page);
@@ -182,29 +175,28 @@ const getEvent = async(req, res, next) => {
         const $ = cheerio.load(response.data);
         const list = []
 
+        let check = $("body.error404").is()
+        console.log(check);
+            
         $("#main")
-            .eq(0)
-            .children()
-            .each((i, elem) => {
-                let object = {}
-                const title = $("header > h2").eq(i).find("a")
-                
-                if(title != ""){
-                    object.title = $("header > h2").eq(i).find("a").text()
-                    object.url = $("header > h2").eq(i).find("a").attr("href")
-                    object.date = $("header > div > span.posted-on > a > time.entry-date.published").eq(i).text()
-                    object.image = $("div.post-thumb > a").eq(i).find("img").attr("src")
-                    list.push(object)            
-                }
+        .eq(0)
+        .children()
+        .each((i, elem) => {
+            let object = {}
+            const title = $("header > h2").eq(i).find("a")
+            
+            if(title != ""){
+                object.title = $("header > h2").eq(i).find("a").text()
+                object.url = $("header > h2").eq(i).find("a").attr("href")
+                object.date = $("header > div > span.posted-on > a > time.entry-date.published").eq(i).text()
+                object.image = $("div.post-thumb > a").eq(i).find("img").attr("src")
+                list.push(object)            
+            }
+        });
 
-            });
+        res.send({status: true, list})   
 
-        
-        res.send({status: true, data: list})
-
-
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
         res.send({
             msg: err.stack
         })
@@ -214,7 +206,50 @@ const getEvent = async(req, res, next) => {
 //Get detail Info Event Tegal
 const getEventDetail = async(req, res, next) => {
     try {
+        console.log("running");
+        const page = req.params.page;
+        const id = req.params.id;
+        //for destination of web
+        const baseURL = await Axios.get("https://infotegal.com/category/event-tegal/page/" + page);
+        //for load html
+        const $baseURL = cheerio.load(baseURL.data);
         
+        let listURL = []        
+
+        $baseURL("#main")
+        .eq(0)
+        .children()
+        .each((i, elem) => {
+            const title = $baseURL("header > h2").eq(i).find("a")
+            
+            if(title != ""){
+                let url = $baseURL("header > h2").eq(i).find("a").attr("href")
+                console.log(url)
+                listURL.push(url)            
+            }
+        });
+
+        const detailURL = await Axios.get(listURL[id]);
+        const $ = cheerio.load(detailURL.data);
+        
+        let object = {}
+
+        object.title    = $("header > h1.entry-title").text()
+        object.image    = $("div.single-feat.clearfix > figure > img").attr("src")
+        
+        let listContent = []
+        
+        $("div.entry-content").children().each((i,elem) => {
+            if($(elem).text() != ""){
+                console.log($(elem).text().trim());
+                listContent.push($(elem).text().trim())
+            }
+        })
+        listContent.pop()
+
+        object.content  = listContent.join()
+
+        res.send({status : true, object})
 
         
     } catch (error) {
@@ -224,6 +259,12 @@ const getEventDetail = async(req, res, next) => {
         })
     }
 }
+
+
+// const getKuliner
+
+// const getPenginapan
+
 
 
 module.exports = { getBerita, getBeritaDetail, getPariwisata, getPariwisataDetail, getOleh, getOlehDetail, getEvent, getEventDetail}
