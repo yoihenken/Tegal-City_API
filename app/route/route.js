@@ -11,4 +11,13 @@ router.get("/oleh/:id", controller.getOlehDetail)
 router.get("/event/:page", controller.getEvent)
 router.get("/event/detail/:page/:id", controller.getEventDetail)
 
+router.get("/kuliner", controller.getKuliner)
+router.get("/kuliner/:id", controller.getKulinerDetail)
+
+router.get("/penginapan", controller.getPenginapan)
+router.get("/penginapan/:id", controller.getPenginapanDetail)
+
+
+
+
 module.exports = { router };

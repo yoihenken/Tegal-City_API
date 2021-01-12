@@ -260,11 +260,77 @@ const getEventDetail = async(req, res, next) => {
     }
 }
 
+//Get all data Kuliner
+const getKuliner = async(req, res, next) => {
+    try{
+        const kuliner = require("../data/data-kuliner").listKuliner
+        let data = []
+        
+        for (let index = 0; index < kuliner.length; index++) {
+            data.push({title : kuliner[index].title, image : kuliner[index].image })
+        }
 
-// const getKuliner
+        res.send({status: true, data}) 
 
-// const getPenginapan
+    }catch(err){
+        console.log(err);
+        res.send({
+            msg: err.stack
+        })
+    }
+}
+
+//Get Kuliner detail
+const getKulinerDetail = async(req, res, next) => {
+    try{
+        const id = req.params.id;
+        const data = require("../data/data-kuliner").listKuliner[id]
+
+        res.send({status: true, data}) 
+
+    }catch(err){
+        console.log(err);
+        res.send({
+            msg: err.stack
+        })
+    }
+}
+
+//Get all data Penginapan
+const getPenginapan = async(req, res, next) => {
+    try{
+        const penginapan = require("../data/data-penginapan").listPenginapan
+        let data = []
+        
+        for (let index = 0; index < penginapan.length; index++) {
+            data.push({title : penginapan[index].title, image : penginapan[index].image })
+        }
+
+        res.send({status: true, data}) 
+
+    }catch(err){
+        console.log(err);
+        res.send({
+            msg: err.stack
+        })
+    }
+}
+
+//Get Penginapan detail
+const getPenginapanDetail = async(req, res, next) => {
+    try{
+        const id = req.params.id;
+        const data = require("../data/data-penginapan").listPenginapan[id]
+
+        res.send({status: true, data}) 
+
+    }catch(err){
+        console.log(err);
+        res.send({
+            msg: err.stack
+        })
+    }
+}
 
 
-
-module.exports = { getBerita, getBeritaDetail, getPariwisata, getPariwisataDetail, getOleh, getOlehDetail, getEvent, getEventDetail}
+module.exports = { getBerita, getBeritaDetail, getPariwisata, getPariwisataDetail, getOleh, getOlehDetail, getEvent, getEventDetail, getKuliner, getKulinerDetail, getPenginapan, getPenginapanDetail}
