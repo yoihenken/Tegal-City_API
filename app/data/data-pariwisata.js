@@ -163,8 +163,8 @@ var listPariwisata = [
     },
     {
         title : "Curug Jejeg",
-        image : "No., Jl. Raya Jejeg No.7, Sawah&Ladang, Jejeg, Bumijawa, Tegal, Jawa Tengah 52466",
-        address : "https://4.bp.blogspot.com/-8kT7d3SLiqY/WIwMQZf-Z8I/AAAAAAAAEno/tQdR5b3s5F8sPfjt5RDI2EMA2PgizWioACLcB/s640/curug_jejeg_bumijawa_tegal_4.jpg",
+        image : "https://4.bp.blogspot.com/-8kT7d3SLiqY/WIwMQZf-Z8I/AAAAAAAAEno/tQdR5b3s5F8sPfjt5RDI2EMA2PgizWioACLcB/s640/curug_jejeg_bumijawa_tegal_4.jpg",
+        address : "No., Jl. Raya Jejeg No.7, Sawah&Ladang, Jejeg, Bumijawa, Tegal, Jawa Tengah 52466",
         content : "Daya tarik yang ditawarkan dari Curug Jejeg ini pemandangan air yang turun dari atas bukit setinggi 22 meter. Lokasinya juga masih asri, pengunjung bisa menikmati gemricik air sambil duduk di bebatuan yang juga memang menjadi salah satu ciri khasnya. Sumber air terjunnya berasal dari Kali Sier. Tempatnya sangat nyaman untuk bermain air karena kolam air tidak terlalu dalam. Sumber airnya juga sangat jernih. Ada tiga tingkatan pada curug ini sehingga membuat pengunjung semakin betah berlama-lama."
     },
     {
