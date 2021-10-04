@@ -1,8 +1,5 @@
 const cheerio = require("cheerio")
 const { default: Axios } = require("axios");
-const { html } = require("cheerio");
-const { text } = require("body-parser");
-
 
 //LIST BERITA
 //USING GET
